@@ -30,11 +30,12 @@ export default function Scan({ navigation }) {
   const handleBarCodeScanned = async({ type, data }) => {
     setIsLoading(true)
     setScanned(true);
-    setText(data);
+   
     const scanData = JSON.parse(data);
     const response = await getProductDetails(scanData?._id, userInfo?.jwt_token);
     navigation.navigate("Product", { details: response });
     setIsLoading(false)
+    setText("Tap to Scan Again")
   };
 
   // Check permissions and return the screens
@@ -66,7 +67,7 @@ export default function Scan({ navigation }) {
 
   const handleScan = async () => {
     setScanned(false);
-    setScanClicked(true);
+
   };
 
 
