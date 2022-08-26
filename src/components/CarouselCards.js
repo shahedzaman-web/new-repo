@@ -7,16 +7,14 @@ const CarouselCards = ({ details }) => {
   const [index, setIndex] = React.useState(0);
   const isCarousel = React.useRef(null);
 
-  const { name, location, area, price, quantity, images } = details;
-
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>{name}</Text>
+      <Text style={styles.header}>{details?.name}</Text>
       <Carousel
         layout="stack"
         layoutCardOffset={9}
         ref={isCarousel}
-        data={images}
+        data={details?.images}
         renderItem={CarouselCardItem}
         sliderWidth={SLIDER_WIDTH}
         itemWidth={ITEM_WIDTH}
@@ -24,7 +22,7 @@ const CarouselCards = ({ details }) => {
         useScrollView={true}
       />
       <Pagination
-        dotsLength={images?.length}
+        dotsLength={details?.images?.length}
         activeDotIndex={index}
         carouselRef={isCarousel}
         dotStyle={{
@@ -50,7 +48,7 @@ const CarouselCards = ({ details }) => {
           }}
         >
           <Text style={styles.title}>LOCATION :</Text>
-          <Text style={styles.title}>{location?.name}</Text>
+          <Text style={styles.title}>{details?.location?.name}</Text>
         </View>
         <View
           style={{
@@ -63,7 +61,7 @@ const CarouselCards = ({ details }) => {
           }}
         >
           <Text style={styles.title}>AREA :</Text>
-          <Text style={styles.title}>{area?.name}</Text>
+          <Text style={styles.title}>{details?.area?.name}</Text>
         </View>
         <View
           style={{
@@ -76,7 +74,7 @@ const CarouselCards = ({ details }) => {
           }}
         >
           <Text style={styles.title}>PRICE :</Text>
-          <Text style={styles.title}>{price}</Text>
+          <Text style={styles.title}>{details?.price}</Text>
         </View>
         <View
           style={{
@@ -89,7 +87,7 @@ const CarouselCards = ({ details }) => {
           }}
         >
           <Text style={styles.title}>PART NUMBER :</Text>
-          <Text style={styles.title}>5G-2019525125</Text>
+          <Text style={styles.title}>{details?.no}</Text>
         </View>
         <View
           style={{
@@ -102,7 +100,7 @@ const CarouselCards = ({ details }) => {
           }}
         >
           <Text style={styles.title}>STOCK :</Text>
-          <Text style={styles.title}>{quantity}</Text>
+          <Text style={styles.title}>{details?.quantity}</Text>
         </View>
         <View
           style={{
@@ -115,7 +113,9 @@ const CarouselCards = ({ details }) => {
           }}
         >
           <Text style={styles.title}>DEFECT :</Text>
-          <Text style={styles.title}>No</Text>
+          <Text style={styles.title}>
+            {details?.defect !== undefined ? details?.defect : "NO"}
+          </Text>
         </View>
         <View
           style={{
@@ -124,7 +124,7 @@ const CarouselCards = ({ details }) => {
             paddingTop: 5,
           }}
         >
-          <Text style={styles.title}>For : {name}</Text>
+          <Text style={styles.title}>For : {details?.name}</Text>
         </View>
       </View>
     </View>

@@ -3,13 +3,12 @@ import React from "react";
 import CarouselCards from "../components/CarouselCards";
 
 export default function ProductDetails({ route, navigation }) {
-
-  const {details} = route.params;
+  const { details } = route.params;
   const handleRescan = async () => {
     await navigation.navigate("Scan");
   };
   const handleAccept = async () => {
-    await navigation.navigate("Sale");
+    await navigation.navigate("Sale", { price: details.price ,id: details._id});
   };
   return (
     <ScrollView

@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, Button, TouchableOpacity } from "react-native";
+import { Text, View, StyleSheet, Button, TouchableOpacity, ActivityIndicator } from "react-native";
 import React, { useEffect, useState } from "react";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import { getProductDetails } from "../network/apiGetDetails";
@@ -8,16 +8,16 @@ export default function Scan({ navigation }) {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
   const [text, setText] = useState("Not yet scanned");
-    const {userInfo} =React.useContext(DataContext);
+  const [isLoading, setIsLoading] = useState(false);
+  const { userInfo } = React.useContext(DataContext);
 
-    const askForCameraPermission = () => {
-      (async () => {
-        const { status } = await BarCodeScanner.requestPermissionsAsync();
-        console.log({status})
-        if (status === "granted") {
-      setHasPermission(status === "granted");
-        }
+  const askForCameraPermission = () => {
+    (async () => {
+      const { status } = await BarCodeScanner.requestPermissionsAsync();
 
+      if (status === "granted") {
+        setHasPermission(status === "granted");
+      }
     })();
   };
 
@@ -27,10 +27,14 @@ export default function Scan({ navigation }) {
   }, []);
 
   // What happens when we scan the bar code
-  const handleBarCodeScanned = ({ type, data }) => {
+  const handleBarCodeScanned = async({ type, data }) => {
+    setIsLoading(true)
     setScanned(true);
     setText(data);
-    
+    const scanData = JSON.parse(data);
+    const response = await getProductDetails(scanData?._id, userInfo?.jwt_token);
+    navigation.navigate("Product", { details: response });
+    setIsLoading(false)
   };
 
   // Check permissions and return the screens
@@ -52,19 +56,19 @@ export default function Scan({ navigation }) {
       </View>
     );
   }
+  if (isLoading) {
+    return (
+      <View style={styles.container}>
+      <ActivityIndicator color="#2f91ce" />
+      </View>
+    );
+  }
 
   const handleScan = async () => {
     setScanned(false);
     setScanClicked(true);
   };
 
-  const handleDetails = async () => {
-    const data = JSON.parse(text);
-   
-    const response = await getProductDetails(data?._id,userInfo?.jwt_token);
-
-    navigation.navigate("Product", { details: response });
-  };
 
   return (
     <View style={styles.container}>
@@ -83,11 +87,7 @@ export default function Scan({ navigation }) {
         <Text style={styles.titleScan}>Scan</Text>
       </TouchableOpacity>
 
-      {scanned && (
-        <TouchableOpacity onPress={handleDetails} style={styles.button}>
-          <Text style={styles.title}>Get Details</Text>
-        </TouchableOpacity>
-      )}
+     
     </View>
   );
 }
